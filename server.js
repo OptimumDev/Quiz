@@ -31,7 +31,10 @@ const questions = [
 
 app.get("/questions", (req, res) => {
     console.log(questions)
-    res.send([...questions.values()])
+    res.send([...questions.values()].map(q => {
+        const {right,...qq} = q;
+        return qq;
+    }))
 });
 
 
