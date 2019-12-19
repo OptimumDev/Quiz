@@ -6,7 +6,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 app.use(express.static("static"));
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 class QuestionData {
     constructor(image, question, answers, right) {
@@ -22,22 +22,23 @@ class QuestionData {
 
 const questions = [
     new QuestionData('tiger', 'Какой тигр самый крупный?', ['Амурский', 'Малазийский', 'Индийский', 'Суматранский'], 1),
-    new QuestionData('coala', 'Где живет коала?', ['В горной пещере', 'В бамбуковом лесу', 'В депрессии', 'В тропическом лесу'], 3)
+    new QuestionData('coala', 'Где живет коала?', ['В горной пещере', 'В бамбуковом лесу', 'В депрессии', 'В тропическом лесу'], 3),
+    new QuestionData('zebra', 'Какого цвета хвост у зебры?', ['Белый', 'Черный', 'Серый', 'Коричневый'], 1)
 ].reduce((map, x) => {
     map.set(x.id, x);
     return map;
 }, new Map())
-
+console.log(questions.keys())
 
 app.get("/questions", (req, res) => {
-    res.send([...questions.values()].map(q => {
+    res.json([...questions.values()].map(q => {
         const { right, ...qq } = q;
         return qq;
     }))
 });
 
 app.post("/answers", (req, res) => {
-    const body = req.body;
+    const body = [...req.body.answers];
     console.log(body);
     let rightCount = 0;
     for (const answer of body) {
@@ -45,7 +46,7 @@ app.post("/answers", (req, res) => {
             rightCount += questions.get(answer.id) === answer.guess
         else
             res.sendStatus(404);
-        res.send(rightCount);
+        res.json(rightCount);
     }
 });
 
