@@ -4,7 +4,8 @@
   "description": "123",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/OptimumDev/Quiz/issues"
   },
-  "homepage": "https://github.com/OptimumDev/Quiz#readme"
+  "homepage": "https://github.com/OptimumDev/Quiz#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
