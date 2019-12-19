@@ -1,9 +1,12 @@
 const express = require("express");
 const uuid = require('uuid/v4');
+const bodyParser = require('body-parser');
 const port = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.static("static"));
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 class QuestionData {
     constructor(image, question, answers, right) {
@@ -26,17 +29,25 @@ const questions = [
 }, new Map())
 
 
-
-
-
 app.get("/questions", (req, res) => {
-    console.log(questions)
     res.send([...questions.values()].map(q => {
-        const {right,...qq} = q;
+        const { right, ...qq } = q;
         return qq;
     }))
 });
 
+app.post("/answers", (req, res) => {
+    const body = req.body;
+    console.log(body);
+    let rightCount = 0;
+    for (const answer of body) {
+        if (questions.has(answer.id))
+            rightCount += questions.get(answer.id) === answer.guess
+        else
+            res.sendStatus(404);
+        res.send(rightCount);
+    }
+});
 
 
 app.listen(port, (err) => {
